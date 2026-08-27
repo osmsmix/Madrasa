@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Madrasa">
+  <rect x="14" y="14" width="172" height="172" rx="42" fill="none" stroke="#1E6F5C" stroke-width="8"/>
+  <path d="M52 146 L52 66 L100 110 L148 66 L148 146" fill="none" stroke="#1E6F5C" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>
+  <rect x="52" y="158" width="96" height="9" rx="4.5" fill="#E2A93B"/>
+</svg>

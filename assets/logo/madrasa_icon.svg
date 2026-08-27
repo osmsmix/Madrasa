@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Madrasa app icon">
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="#1E6F5C"/>
+  <path d="M133 374 L133 169 L256 282 L379 169 L379 374" fill="none" stroke="#FFFFFF" stroke-width="38" stroke-linejoin="round" stroke-linecap="round"/>
+  <rect x="133" y="404" width="246" height="23" rx="11.5" fill="#E2A93B"/>
+</svg>

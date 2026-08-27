@@ -1,0 +1,9 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 660, "h": 760 }
+  ],
+  "annotations": [
+    { "id": "brief", "x": 0, "y": -120, "w": 560, "text": "Madrasa — final logo (Direction D). Monogram M with a book-dip valley on a gold shelf line. Teal + gold brand palette." }
+  ],
+  "launch": { "view": "canvas" }
+}
