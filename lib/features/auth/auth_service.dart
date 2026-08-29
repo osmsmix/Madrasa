@@ -36,12 +36,14 @@ class AuthService {
 
   /// Ask ChinqIT to send a code to [phone] (already normalised).
   Future<void> sendOtp(String phone, {String? language}) async {
-    final res = await _client.functions.invoke(
-      'send-otp',
-      body: {'phone_number': phone, 'language': ?language},
-    );
-    if (res.status != 200) {
-      throw AuthException(_errorFrom(res.data) ?? 'failed to send code');
+    try {
+      await _client.functions.invoke(
+        'send-otp',
+        body: {'phone_number': phone, 'language': ?language},
+      );
+    } on FunctionException catch (e) {
+      throw AuthException(
+          _errorFrom(e.details) ?? 'send-otp failed (HTTP ${e.status})');
     }
   }
 
@@ -53,22 +55,25 @@ class AuthService {
     String? fullName,
   }) async {
     final password = _randomPassword();
-    final res = await _client.functions.invoke(
-      'verify-otp',
-      body: {
-        'phone_number': phone,
-        'user_code': code,
-        'password': password,
-        if (fullName != null && fullName.trim().isNotEmpty)
-          'full_name': fullName.trim(),
-      },
-    );
-
-    if (res.status == 401) throw const InvalidOtpException();
-    if (res.status != 200) {
-      throw AuthException(_errorFrom(res.data) ?? 'verification failed');
+    try {
+      await _client.functions.invoke(
+        'verify-otp',
+        body: {
+          'phone_number': phone,
+          'user_code': code,
+          'password': password,
+          if (fullName != null && fullName.trim().isNotEmpty)
+            'full_name': fullName.trim(),
+        },
+      );
+    } on FunctionException catch (e) {
+      // Edge Function returned non-2xx (invoke throws rather than returning it).
+      if (e.status == 401) throw const InvalidOtpException();
+      throw AuthException(
+          _errorFrom(e.details) ?? 'verify-otp failed (HTTP ${e.status})');
     }
 
+    // verify-otp succeeded → sign in with the throwaway password.
     final auth = await _client.auth.signInWithPassword(
       phone: phone,
       password: password,

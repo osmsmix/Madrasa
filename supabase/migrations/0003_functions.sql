@@ -4,7 +4,14 @@
 -- Atomically create a school and make the caller its director.
 -- SECURITY DEFINER so it can seed the first director membership (which the RLS
 -- policies would otherwise forbid). Callable by any signed-in user.
-create or replace function app.create_school_with_director(
+--
+-- IMPORTANT: this MUST live in `public`, not `app` — Supabase's PostgREST only
+-- exposes the `public` schema over the API, so an RPC in `app` is not callable
+-- via supabase.rpc(). The RLS helper functions stay in `app` (they're called
+-- from policies in SQL, not over the API).
+drop function if exists app.create_school_with_director(text, term_type, numeric);
+
+create or replace function public.create_school_with_director(
   p_name      text,
   p_term_type term_type default 'trimester',
   p_grade_max numeric default 20
@@ -36,6 +43,6 @@ begin
 end;
 $$;
 
-grant execute on function app.create_school_with_director(text, term_type, numeric) to authenticated;
+grant execute on function public.create_school_with_director(text, term_type, numeric) to authenticated;
 grant execute on function app.current_phone() to authenticated;
 grant usage on schema app to authenticated;

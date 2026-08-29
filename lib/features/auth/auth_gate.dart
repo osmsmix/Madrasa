@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../l10n/strings.dart';
+import '../director/director_app.dart';
 import '../routing/role_resolver.dart';
 import '../routing/role_select_screen.dart';
 import '../shells/placeholder_shells.dart';
+import '../teacher/teacher_app.dart';
 import 'auth_screen.dart';
 
 /// Root gate: no session → auth screen; session → resolve role(s) → route.
@@ -34,8 +36,8 @@ class _RoleRouter extends StatefulWidget {
 }
 
 class _RoleRouterState extends State<_RoleRouter> {
-  late Future<List<AppRole>> _future;
-  AppRole? _selected;
+  late Future<List<MembershipContext>> _future;
+  MembershipContext? _selected;
 
   @override
   void initState() {
@@ -43,12 +45,16 @@ class _RoleRouterState extends State<_RoleRouter> {
     _future = context.read<RoleResolver>().resolve();
   }
 
-  void _reload() =>
-      setState(() => _future = context.read<RoleResolver>().resolve());
+  void _reload() {
+    setState(() {
+      _selected = null;
+      _future = context.read<RoleResolver>().resolve();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<AppRole>>(
+    return FutureBuilder<List<MembershipContext>>(
       future: _future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -58,24 +64,22 @@ class _RoleRouterState extends State<_RoleRouter> {
           return _ErrorRetry(onRetry: _reload);
         }
 
-        final roles = snapshot.data ?? const [];
-        if (roles.isEmpty) return const NotLinkedScreen();
-
-        final role = _selected ?? (roles.length == 1 ? roles.first : null);
-        if (role == null) {
-          return RoleSelectScreen(
-            roles: roles,
-            onSelected: (r) => setState(() => _selected = r),
-          );
-        }
-        return _shellFor(role);
+        // Everyone goes through the chooser each sign-in (even with a single
+        // context), and can create their own school from there.
+        final contexts = snapshot.data ?? const [];
+        if (_selected != null) return _shellFor(_selected!);
+        return SchoolRoleSelectScreen(
+          contexts: contexts,
+          onSelected: (c) => setState(() => _selected = c),
+          onReload: _reload,
+        );
       },
     );
   }
 
-  Widget _shellFor(AppRole role) => switch (role) {
-        AppRole.director => const DirectorHome(),
-        AppRole.teacher => const TeacherHome(),
+  Widget _shellFor(MembershipContext ctx) => switch (ctx.role) {
+        AppRole.director => DirectorApp(initialSchoolId: ctx.schoolId),
+        AppRole.teacher => TeacherApp(schoolId: ctx.schoolId),
         AppRole.parent => const ParentHome(),
       };
 }

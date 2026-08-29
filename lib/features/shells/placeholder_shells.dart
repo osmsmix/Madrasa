@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../l10n/strings.dart';
+import '../../widgets/language_menu.dart';
 
 /// Temporary landing screens per role. Step 2 only wires auth + routing; the real
 /// director/teacher/parent features replace these in later steps.
@@ -17,6 +18,7 @@ class _RolePlaceholder extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         actions: [
+          const LanguageMenu(),
           IconButton(
             tooltip: s.signOut,
             icon: const Icon(Icons.logout),

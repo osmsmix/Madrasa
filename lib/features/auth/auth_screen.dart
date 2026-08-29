@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show AuthException;
 
 import '../../config/env.dart';
 import '../../l10n/strings.dart';
+import '../../widgets/language_menu.dart';
 import '../../widgets/madrasa_logo.dart';
 import 'auth_service.dart';
 
@@ -23,34 +27,67 @@ class _AuthScreenState extends State<AuthScreen> {
   final _otpCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  static const _resendCooldown = 30; // seconds between SMS sends
+
   _Step _step = _Step.phone;
   bool _busy = false;
   String? _error;
   String _normalizedPhone = '';
+  int _resendIn = 0;
+  Timer? _resendTimer;
 
   AuthService get _auth => context.read<AuthService>();
 
   @override
   void dispose() {
+    _resendTimer?.cancel();
     _phoneCtrl.dispose();
     _otpCtrl.dispose();
     super.dispose();
   }
 
+  void _startCooldown() {
+    _resendTimer?.cancel();
+    setState(() => _resendIn = _resendCooldown);
+    _resendTimer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted) return t.cancel();
+      setState(() => _resendIn -= 1);
+      if (_resendIn <= 0) t.cancel();
+    });
+  }
+
+  /// Send (phone step): validate the form, then send to the entered number.
   Future<void> _sendCode() async {
     if (!_formKey.currentState!.validate()) return;
+    await _send(AuthService.normalizePhone(_phoneCtrl.text), firstTime: true);
+  }
+
+  /// Resend (otp step): re-send to the already-known number, no form involved.
+  Future<void> _resend() async {
+    if (_resendIn > 0) return;
+    await _send(_normalizedPhone, firstTime: false);
+  }
+
+  Future<void> _send(String phone, {required bool firstTime}) async {
     setState(() {
       _busy = true;
       _error = null;
     });
     try {
-      final phone = AuthService.normalizePhone(_phoneCtrl.text);
       await _auth.sendOtp(phone);
       if (!mounted) return;
       setState(() {
         _normalizedPhone = phone;
-        _step = _Step.otp;
+        if (firstTime) _step = _Step.otp;
       });
+      _startCooldown();
+      if (!firstTime) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.s.otpSentTo('+$phone'))),
+        );
+      }
+    } on AuthException catch (e) {
+      if (mounted) setState(() => _error = e.message);
     } catch (_) {
       if (mounted) setState(() => _error = context.s.genericError);
     } finally {
@@ -73,6 +110,9 @@ class _AuthScreenState extends State<AuthScreen> {
       // success → AuthGate rebuilds; nothing to do here.
     } on InvalidOtpException {
       if (mounted) setState(() => _error = context.s.invalidCode);
+    } on AuthException catch (e) {
+      // Surface the real cause (server/config error) while we're setting up.
+      if (mounted) setState(() => _error = e.message);
     } catch (_) {
       if (mounted) setState(() => _error = context.s.genericError);
     } finally {
@@ -92,6 +132,11 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     final s = context.s;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: const [LanguageMenu()],
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -189,8 +234,10 @@ class _AuthScreenState extends State<AuthScreen> {
               child: Text(s.changeNumber),
             ),
             TextButton(
-              onPressed: _busy ? null : _sendCode,
-              child: Text(s.resendCode),
+              onPressed: (_busy || _resendIn > 0) ? null : _resend,
+              child: Text(
+                _resendIn > 0 ? '${s.resendCode} ($_resendIn)' : s.resendCode,
+              ),
             ),
           ],
         ),

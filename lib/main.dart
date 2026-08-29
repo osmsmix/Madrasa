@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -7,6 +9,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config/env.dart';
 import 'config/locale_controller.dart';
 import 'config/theme.dart';
+import 'data/academic_repository.dart';
+import 'data/school_repository.dart';
+import 'data/teacher_repository.dart';
 import 'features/auth/auth_gate.dart';
 import 'features/auth/auth_service.dart';
 import 'features/routing/role_resolver.dart';
@@ -14,6 +19,16 @@ import 'l10n/strings.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Make every framework/uncaught error visible in the console during setup.
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+    debugPrint('FlutterError: ${details.exceptionAsString()}\n${details.stack}');
+  };
+  PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrint('Uncaught: $error\n$stack');
+    return true;
+  };
 
   await Future.wait(
     ['ar', 'fr', 'en'].map((l) => initializeDateFormatting(l, null)),
@@ -45,6 +60,9 @@ class MadrasaApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => LocaleController()),
         Provider(create: (_) => AuthService(client)),
         Provider(create: (_) => RoleResolver(client)),
+        Provider(create: (_) => SchoolRepository(client)),
+        Provider(create: (_) => AcademicRepository(client)),
+        Provider(create: (_) => TeacherRepository(client)),
       ],
       child: Consumer<LocaleController>(
         builder: (context, locale, _) => MaterialApp(
