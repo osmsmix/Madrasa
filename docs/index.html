@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Madrasa — Support &amp; Privacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap">
+<style>
+  :root {
+    --teal:#1E6F5C; --gold:#E2A93B; --ink:#12332B; --sand:#F6F4EF;
+    --muted:#5b6b64; --card:#ffffff; --line:#e7e7e0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin:0; background:var(--sand); color:var(--ink);
+    font-family:'Cairo', system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height:1.6;
+  }
+  .wrap { max-width:760px; margin:0 auto; padding:32px 20px 64px; }
+  header { display:flex; align-items:center; gap:16px; margin-bottom:8px; }
+  header h1 { margin:0; font-size:28px; }
+  .tag { color:var(--muted); margin:0 0 28px; }
+  .card {
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:22px 24px; margin-bottom:20px;
+    box-shadow:0 8px 24px rgba(18,51,43,.05);
+  }
+  h2 { color:var(--teal); font-size:20px; margin:0 0 10px; }
+  h3 { font-size:16px; margin:18px 0 6px; }
+  a { color:var(--teal); }
+  .btn {
+    display:inline-block; background:var(--teal); color:#fff; text-decoration:none;
+    padding:10px 18px; border-radius:10px; font-weight:600; margin-top:6px;
+  }
+  ul { padding-inline-start:20px; }
+  .muted { color:var(--muted); font-size:14px; }
+  hr { border:none; border-top:1px solid var(--line); margin:36px 0; }
+  .lang { color:var(--muted); font-size:13px; letter-spacing:.08em; text-transform:uppercase; margin:0 0 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <svg width="52" height="52" viewBox="0 0 200 200" aria-label="Madrasa">
+      <rect x="14" y="14" width="172" height="172" rx="42" fill="none" stroke="#1E6F5C" stroke-width="8"/>
+      <path d="M52 146 L52 66 L100 110 L148 66 L148 146" fill="none" stroke="#1E6F5C" stroke-width="15" stroke-linejoin="round" stroke-linecap="round"/>
+      <rect x="52" y="158" width="96" height="9" rx="4.5" fill="#E2A93B"/>
+    </svg>
+    <h1>Madrasa</h1>
+  </header>
+  <p class="tag">School management &amp; parent communication · Gestion scolaire &amp; communication avec les parents</p>
+
+  <!-- SUPPORT -->
+  <div class="card">
+    <p class="lang">Support (EN)</p>
+    <h2>Support</h2>
+    <p>Need help with Madrasa, or have a question, bug report, or feature request?
+       We're happy to help.</p>
+    <p><strong>Email:</strong> <a href="mailto:oussama.mohamedelhadi@gmail.com">oussama.mohamedelhadi@gmail.com</a></p>
+    <a class="btn" href="mailto:oussama.mohamedelhadi@gmail.com?subject=Madrasa%20Support">Contact support</a>
+    <hr>
+    <p class="lang">Assistance (FR)</p>
+    <h2>Assistance</h2>
+    <p>Besoin d'aide avec Madrasa, une question, un bug ou une suggestion ?
+       Nous vous répondrons avec plaisir.</p>
+    <p><strong>E-mail :</strong> <a href="mailto:oussama.mohamedelhadi@gmail.com">oussama.mohamedelhadi@gmail.com</a></p>
+  </div>
+
+  <!-- PRIVACY -->
+  <div class="card" id="privacy">
+    <h2>Privacy Policy</h2>
+    <p class="muted">Last updated: 25 September 2026</p>
+
+    <p>Madrasa ("we", "the app") is a school management and parent-communication
+       service. This policy explains what we collect and how we use it.</p>
+
+    <h3>Information we collect</h3>
+    <ul>
+      <li><strong>Your phone number</strong> — to sign you in (via a one-time
+          verification code) and identify your role (director, teacher, parent).</li>
+      <li><strong>Your name</strong>, if you or your school provide it.</li>
+      <li><strong>School data entered by schools</strong>: classes, subjects,
+          timetables, students' names, grades, attendance and announcements —
+          entered and controlled by each school's staff.</li>
+    </ul>
+    <p>We do <strong>not</strong> collect location, contacts, photos, or advertising
+       identifiers, and we do <strong>not</strong> track you across other apps.</p>
+
+    <h3>How we use it</h3>
+    <p>Only to provide the service: setting up a school, recording attendance and
+       grades, letting parents view their child's grades and attendance, and sending
+       relevant notifications.</p>
+
+    <h3>Sharing</h3>
+    <p>We do <strong>not</strong> sell your data. We use a few service providers
+       strictly to run the app:</p>
+    <ul>
+      <li><strong>Supabase</strong> — secure database and authentication.</li>
+      <li><strong>ChinqIT</strong> — delivery of the one-time sign-in code by SMS/WhatsApp.</li>
+      <li><strong>Firebase Cloud Messaging (Google)</strong> — push notifications.</li>
+    </ul>
+    <p>Access is restricted by role: a parent sees only their own child; a teacher
+       only their own classes; a director only their own school.</p>
+
+    <h3>Data retention &amp; account deletion</h3>
+    <p>Your data is kept while your account is active. You can
+       <strong>delete your account at any time from within the app</strong>
+       (account menu → Delete account), which permanently removes your login and
+       personal profile.</p>
+
+    <h3>Children's data</h3>
+    <p>Students' information is entered by their school, which is responsible for
+       having the appropriate authorization from parents/guardians. Parents access
+       only their own child's information.</p>
+
+    <h3>Security</h3>
+    <p>Data is protected in transit and at rest, and access is enforced by
+       row-level security rules on the server.</p>
+
+    <h3>Contact</h3>
+    <p><a href="mailto:oussama.mohamedelhadi@gmail.com">oussama.mohamedelhadi@gmail.com</a></p>
+
+    <hr>
+
+    <h2>Politique de confidentialité (FR)</h2>
+    <p>Madrasa est un service de gestion scolaire et de communication avec les
+       parents. Nous collectons votre <strong>numéro de téléphone</strong> (connexion
+       par code à usage unique et identification de votre rôle), votre
+       <strong>nom</strong> le cas échéant, et les <strong>données scolaires saisies
+       par les écoles</strong> (classes, matières, emplois du temps, élèves, notes,
+       présences, annonces).</p>
+    <p>Nous ne vendons pas vos données et ne vous suivons pas dans d'autres
+       applications. Nous utilisons Supabase (base de données), ChinqIT (envoi du
+       code par SMS/WhatsApp) et Firebase (notifications) uniquement pour faire
+       fonctionner l'application. L'accès est limité par rôle.</p>
+    <p>Vous pouvez <strong>supprimer votre compte à tout moment depuis
+       l'application</strong> (menu Compte → Supprimer le compte). Les données des
+       élèves sont saisies par l'école, responsable des autorisations nécessaires.</p>
+    <p>Contact : <a href="mailto:oussama.mohamedelhadi@gmail.com">oussama.mohamedelhadi@gmail.com</a></p>
+  </div>
+
+  <p class="muted">© 2026 Madrasa</p>
+</div>
+</body>
+</html>

@@ -23,9 +23,12 @@ class AuthService {
   static String normalizePhone(String raw, {String? countryCode}) {
     final cc = countryCode ?? Env.defaultCountryCode;
     var digits = raw.replaceAll(RegExp(r'\D'), '');
-    if (digits.startsWith('00')) digits = digits.substring(2);
+    // Drop an international "00<cc>" prefix if present (e.g. 00222…).
+    if (digits.startsWith('00$cc')) digits = digits.substring(2);
+    // Already carries the country code → use as-is; otherwise prepend it.
+    // (No leading-zero stripping — Mauritanian numbers have none, and it would
+    // mangle an all-zeros number like the reviewer's 00000000.)
     if (digits.startsWith(cc)) return digits;
-    if (digits.startsWith('0')) digits = digits.substring(1);
     return '$cc$digits';
   }
 

@@ -260,11 +260,12 @@ class _AnnouncementDialogState extends State<_AnnouncementDialog> {
   Widget build(BuildContext context) {
     final s = context.s;
     return AlertDialog(
+      scrollable: true,
       title: Text(widget.editing == null ? s.newAnnouncement : s.edit),
       content: Form(
         key: _formKey,
         child: SizedBox(
-          width: 420,
+          width: double.maxFinite,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

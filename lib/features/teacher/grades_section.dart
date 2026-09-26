@@ -309,11 +309,12 @@ class _AssessmentDialogState extends State<_AssessmentDialog> {
     final s = context.s;
     final lang = Localizations.localeOf(context).languageCode;
     return AlertDialog(
+      scrollable: true,
       title: Text(s.newAssessment),
       content: Form(
         key: _formKey,
         child: SizedBox(
-          width: 400,
+          width: double.maxFinite,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

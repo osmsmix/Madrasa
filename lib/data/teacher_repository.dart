@@ -9,12 +9,14 @@ class TeacherRepository {
   final SupabaseClient _c;
 
   Future<List<String>> _myMembershipIds({String? schoolId}) async {
-    final uid = _c.auth.currentUser?.id;
-    if (uid == null) return const [];
+    // Matched by phone (stable identity) so memberships added after the account
+    // existed are still found — same reason as RoleResolver.
+    final phone = _c.auth.currentUser?.phone;
+    if (phone == null || phone.isEmpty) return const [];
     var q = _c
         .from('memberships')
         .select('id')
-        .eq('user_id', uid)
+        .eq('phone', phone)
         .eq('role', 'teacher');
     if (schoolId != null) q = q.eq('school_id', schoolId);
     final rows = await q;

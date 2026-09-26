@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// App theme. A single seed color drives light/dark Material 3 schemes.
 class AppTheme {
@@ -15,9 +16,11 @@ class AppTheme {
       seedColor: seed,
       brightness: brightness,
     );
-    return ThemeData(
-      colorScheme: scheme,
-      useMaterial3: true,
+    final base = ThemeData(colorScheme: scheme, useMaterial3: true);
+    // Cairo renders Arabic (and Latin) cleanly — one font for ar/fr/en.
+    final textTheme = GoogleFonts.cairoTextTheme(base.textTheme);
+    return base.copyWith(
+      textTheme: textTheme,
       inputDecorationTheme: const InputDecorationTheme(
         border: OutlineInputBorder(),
       ),
@@ -27,7 +30,8 @@ class AppTheme {
           // would set width to infinity, which crashes inside a Row/unbounded
           // width. Full-width buttons come from the parent (e.g. a stretch Column).
           minimumSize: const Size(64, 52),
-          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          textStyle:
+              GoogleFonts.cairo(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
     );

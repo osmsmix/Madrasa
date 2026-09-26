@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../data/academic_repository.dart';
 import '../../data/models.dart';
 import '../../data/school_repository.dart';
 import '../../l10n/strings.dart';
+import '../../widgets/account_menu.dart';
 import '../../widgets/language_menu.dart';
 import '../../widgets/madrasa_logo.dart';
 import '../../widgets/responsive.dart';
@@ -146,11 +146,7 @@ class _PendingActivationScreen extends StatelessWidget {
       appBar: AppBar(
         actions: [
           const LanguageMenu(),
-          IconButton(
-            tooltip: s.signOut,
-            icon: const Icon(Icons.logout),
-            onPressed: () => Supabase.instance.client.auth.signOut(),
-          ),
+          const AccountMenu(),
         ],
       ),
       body: Center(
@@ -312,15 +308,18 @@ class _DirectorShellState extends State<_DirectorShell> {
           child: ListView(
             children: [
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
                 child: Row(
                   children: [
                     const MadrasaLogo(size: 40),
                     const SizedBox(width: 12),
                     Expanded(
-                      child: Text(widget.school.name,
-                          style: Theme.of(context).textTheme.titleMedium,
-                          overflow: TextOverflow.ellipsis),
+                      child: _SchoolSwitcher(
+                        current: widget.school,
+                        schools: widget.schools,
+                        onSwitch: widget.onSwitch,
+                        onCreate: widget.onCreateSchool,
+                      ),
                     ),
                   ],
                 ),
@@ -349,18 +348,17 @@ class _DirectorShellState extends State<_DirectorShell> {
       automaticallyImplyLeading: showMenu,
       title: Text(_label(context, _current)),
       actions: [
-        _SchoolSwitcher(
-          current: widget.school,
-          schools: widget.schools,
-          onSwitch: widget.onSwitch,
-          onCreate: widget.onCreateSchool,
-        ),
+        // On wide screens the switcher sits in the app bar; on phones it moves
+        // to the drawer header so the top bar stays clean like teacher/parent.
+        if (!showMenu)
+          _SchoolSwitcher(
+            current: widget.school,
+            schools: widget.schools,
+            onSwitch: widget.onSwitch,
+            onCreate: widget.onCreateSchool,
+          ),
         const LanguageMenu(),
-        IconButton(
-          tooltip: context.s.signOut,
-          icon: const Icon(Icons.logout),
-          onPressed: () => Supabase.instance.client.auth.signOut(),
-        ),
+        const AccountMenu(),
       ],
     );
   }
@@ -495,35 +493,47 @@ class _DashboardSectionState extends State<_DashboardSection> {
                     Text(s.overview,
                         style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 16,
-                      runSpacing: 16,
-                      children: [
-                        _StatCard(
-                          icon: Icons.groups_outlined,
-                          label: s.statClasses,
-                          value: st?.classes,
-                          onTap: () => widget.onOpen(_Section.classes),
-                        ),
-                        _StatCard(
-                          icon: Icons.school_outlined,
-                          label: s.statStudents,
-                          value: st?.students,
-                          onTap: () => widget.onOpen(_Section.students),
-                        ),
-                        _StatCard(
-                          icon: Icons.co_present_outlined,
-                          label: s.statTeachers,
-                          value: st?.teachers,
-                          onTap: () => widget.onOpen(_Section.teachers),
-                        ),
-                        _StatCard(
-                          icon: Icons.menu_book_outlined,
-                          label: s.statSubjects,
-                          value: st?.subjects,
-                          onTap: () => widget.onOpen(_Section.subjects),
-                        ),
-                      ],
+                    LayoutBuilder(
+                      builder: (context, c) {
+                        const spacing = 12.0;
+                        final cols = c.maxWidth < 520 ? 2 : 4;
+                        final cardW =
+                            (c.maxWidth - spacing * (cols - 1)) / cols;
+                        final cards = <Widget>[
+                          _StatCard(
+                            icon: Icons.groups_outlined,
+                            label: s.statClasses,
+                            value: st?.classes,
+                            onTap: () => widget.onOpen(_Section.classes),
+                          ),
+                          _StatCard(
+                            icon: Icons.school_outlined,
+                            label: s.statStudents,
+                            value: st?.students,
+                            onTap: () => widget.onOpen(_Section.students),
+                          ),
+                          _StatCard(
+                            icon: Icons.co_present_outlined,
+                            label: s.statTeachers,
+                            value: st?.teachers,
+                            onTap: () => widget.onOpen(_Section.teachers),
+                          ),
+                          _StatCard(
+                            icon: Icons.menu_book_outlined,
+                            label: s.statSubjects,
+                            value: st?.subjects,
+                            onTap: () => widget.onOpen(_Section.subjects),
+                          ),
+                        ];
+                        return Wrap(
+                          spacing: spacing,
+                          runSpacing: spacing,
+                          children: [
+                            for (final card in cards)
+                              SizedBox(width: cardW, child: card),
+                          ],
+                        );
+                      },
                     ),
                     const SizedBox(height: 24),
                     Wrap(
@@ -579,9 +589,14 @@ class _DashboardSectionState extends State<_DashboardSection> {
                   const SizedBox(height: 4),
                   Text(
                     '${yearLabel ?? s.noActiveYear}'
-                    '   ·   ${school.termType == TermType.trimester ? s.trimester : s.semester}'
-                    '   ·   / $scale',
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    '  ·  ${school.termType == TermType.trimester ? s.trimester : s.semester}'
+                    '  ·  /$scale',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -613,27 +628,43 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return SizedBox(
-      width: 180,
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(icon, color: scheme.primary),
-                const SizedBox(height: 12),
-                Text(value?.toString() ?? '—',
-                    style: Theme.of(context)
-                        .textTheme
-                        .headlineMedium
-                        ?.copyWith(fontWeight: FontWeight.bold)),
-                Text(label, style: Theme.of(context).textTheme.bodyMedium),
-              ],
-            ),
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: scheme.primary.withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Icon(icon, color: scheme.primary, size: 20),
+                  ),
+                  const Spacer(),
+                  Text(value?.toString() ?? '—',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: scheme.onSurfaceVariant)),
+            ],
           ),
         ),
       ),

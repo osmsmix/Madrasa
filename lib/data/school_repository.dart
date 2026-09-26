@@ -26,13 +26,14 @@ class SchoolRepository {
     return School.fromMap(map);
   }
 
-  /// Schools where the current user is a director.
+  /// Schools where the current user is a director. Matched by phone (the stable
+  /// identity) so memberships created after the account existed are still found.
   Future<List<School>> mySchools() async {
-    final uid = _c.auth.currentUser!.id;
+    final phone = _c.auth.currentUser?.phone ?? '';
     final rows = await _c
         .from('memberships')
         .select('schools(*)')
-        .eq('user_id', uid)
+        .eq('phone', phone)
         .eq('role', 'director');
     return (rows as List)
         .map((r) => r['schools'])
@@ -45,6 +46,12 @@ class SchoolRepository {
   /// RLS allows this only for a director of that school.
   Future<void> deleteSchool(String id) async {
     await _c.from('schools').delete().eq('id', id);
+  }
+
+  /// Fetch a single school by id (visible to its director/teacher/parent via RLS).
+  Future<School?> schoolById(String id) async {
+    final row = await _c.from('schools').select().eq('id', id).maybeSingle();
+    return row == null ? null : School.fromMap(row);
   }
 
   Future<School> updateSchool(School s) async {

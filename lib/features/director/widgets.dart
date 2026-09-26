@@ -109,11 +109,12 @@ class _NameDialogState extends State<NameDialog> {
   Widget build(BuildContext context) {
     final s = context.s;
     return AlertDialog(
+      scrollable: true,
       title: Text(widget.title),
       content: Form(
         key: _formKey,
         child: SizedBox(
-          width: 380,
+          width: double.maxFinite,
           child: TextFormField(
             controller: _ctrl,
             autofocus: true,
@@ -173,11 +174,12 @@ class _TeacherDialogState extends State<TeacherDialog> {
   Widget build(BuildContext context) {
     final s = context.s;
     return AlertDialog(
+      scrollable: true,
       title: Text(widget.initialPhone == null ? s.addTeacher : s.edit),
       content: Form(
         key: _formKey,
         child: SizedBox(
-          width: 380,
+          width: double.maxFinite,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -284,11 +286,12 @@ class _StudentDialogState extends State<StudentDialog> {
   Widget build(BuildContext context) {
     final s = context.s;
     return AlertDialog(
+      scrollable: true,
       title: Text(widget.initialName == null ? s.addStudent : s.edit),
       content: Form(
         key: _formKey,
         child: SizedBox(
-          width: 400,
+          width: double.maxFinite,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -323,6 +326,7 @@ Future<bool> confirmDelete(BuildContext context, String name) async {
   final ok = await showDialog<bool>(
     context: context,
     builder: (_) => AlertDialog(
+        scrollable: true,
       title: Text('${s.delete}: $name'),
       actions: [
         TextButton(
@@ -388,11 +392,12 @@ class _CreateSchoolDialogState extends State<CreateSchoolDialog> {
   Widget build(BuildContext context) {
     final s = context.s;
     return AlertDialog(
+      scrollable: true,
       title: Text(s.createSchoolCta),
       content: Form(
         key: _formKey,
         child: SizedBox(
-          width: 380,
+          width: double.maxFinite,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

@@ -14,7 +14,7 @@
 // trigger (0001_schema.sql), so this function does not touch them beyond full_name.
 import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.7'
-import { corsHeaders, CHINQIT_BASE, DEFAULT_CHANNEL } from '../_shared/cors.ts'
+import { corsHeaders, CHINQIT_BASE, DEFAULT_CHANNEL, toE164 } from '../_shared/cors.ts'
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
@@ -25,27 +25,43 @@ serve(async (req) => {
       throw new Error('phone_number, user_code and password are required')
     }
 
-    const apiKey = Deno.env.get('CHINQIT_API_KEY')
-    if (!apiKey) throw new Error('CHINQIT_API_KEY not configured')
+    // Reviewer/demo bypass: fixed test number + code, no provider call.
+    const testPhone = Deno.env.get('TEST_PHONE')
+    const isTest = testPhone && phone_number === testPhone
 
-    // 1) verify the code with ChinqIT
-    const checkRes = await fetch(`${CHINQIT_BASE}/check`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-      body: JSON.stringify({
-        phoneNumber: phone_number,
-        otp: user_code,
-        channel: channel ?? DEFAULT_CHANNEL,
-      }),
-    })
-    const checkData = await checkRes.json()
-    console.log('ChinqIT /check response:', JSON.stringify(checkData))
+    if (isTest) {
+      if (user_code !== Deno.env.get('TEST_OTP')) {
+        return new Response(JSON.stringify({ error: 'invalid or expired code' }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 401,
+        })
+      }
+    } else {
+      const apiKey = Deno.env.get('CHINQIT_API_KEY')
+      if (!apiKey) throw new Error('CHINQIT_API_KEY not configured')
 
-    if (!checkData.verified) {
-      return new Response(JSON.stringify({ error: 'invalid or expired code' }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 401,
+      // 1) verify the code with ChinqIT
+      const checkRes = await fetch(`${CHINQIT_BASE}/check`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
+        body: JSON.stringify({
+          phoneNumber: toE164(phone_number),
+          otp: user_code,
+          channel: channel ?? DEFAULT_CHANNEL,
+        }),
       })
+      const checkData = await checkRes.json()
+      console.log('ChinqIT /check response:', JSON.stringify(checkData))
+
+      if (!checkData.verified) {
+        return new Response(
+          JSON.stringify({ error: 'invalid or expired code' }),
+          {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 401,
+          },
+        )
+      }
     }
 
     // 2) create or update the Supabase auth user (service role → bypasses RLS)

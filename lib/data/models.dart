@@ -448,6 +448,63 @@ class Assessment {
       );
 }
 
+/// A single grade a parent sees for their child.
+class ParentGradeEntry {
+  ParentGradeEntry({
+    required this.title,
+    required this.type,
+    required this.date,
+    required this.maxGrade,
+    required this.coefficient,
+    this.value,
+  });
+
+  final String title;
+  final AssessmentType type;
+  final DateTime date;
+  final double maxGrade;
+  final double coefficient;
+  final double? value;
+}
+
+/// A child's grades within one subject, plus a weighted average (out of 20).
+class ParentSubjectGrades {
+  ParentSubjectGrades({required this.subjectName, required this.entries});
+  final String subjectName;
+  final List<ParentGradeEntry> entries;
+
+  /// Weighted average normalized to /20 (ignores ungraded entries).
+  double? get average {
+    double sumW = 0, sum = 0;
+    for (final e in entries) {
+      if (e.value == null || e.maxGrade <= 0) continue;
+      final pct = (e.value! / e.maxGrade) * 20;
+      sum += pct * e.coefficient;
+      sumW += e.coefficient;
+    }
+    return sumW == 0 ? null : sum / sumW;
+  }
+}
+
+/// A child's attendance record as a parent sees it.
+class ParentAttendanceEntry {
+  ParentAttendanceEntry({
+    required this.id,
+    required this.date,
+    required this.subjectName,
+    required this.status,
+    required this.excused,
+    this.reason,
+  });
+
+  final String id;
+  final DateTime date;
+  final String subjectName;
+  final AttendanceStatus status;
+  final bool excused;
+  final String? reason;
+}
+
 enum AnnouncementAudience {
   teachers,
   parents,

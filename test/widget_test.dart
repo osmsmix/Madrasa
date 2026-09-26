@@ -9,12 +9,13 @@ void main() {
   test('phone normalizes to E.164 without +', () {
     expect(AuthService.normalizePhone('12345678', countryCode: '222'),
         '22212345678');
-    expect(AuthService.normalizePhone('012345678', countryCode: '222'),
-        '22212345678');
     expect(AuthService.normalizePhone('+222 12 34 56 78', countryCode: '222'),
         '22212345678');
     expect(AuthService.normalizePhone('00222 12345678', countryCode: '222'),
         '22212345678');
+    // Reviewer/demo number: 8 zeros → +222 00000000 (not over-stripped).
+    expect(AuthService.normalizePhone('00000000', countryCode: '222'),
+        '22200000000');
   });
 
   testWidgets('localized strings resolve for ar/fr/en', (tester) async {

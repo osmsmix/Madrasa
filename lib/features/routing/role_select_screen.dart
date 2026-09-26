@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../data/models.dart';
 import '../../l10n/strings.dart';
+import '../../widgets/account_menu.dart';
 import '../../widgets/language_menu.dart';
 import '../../widgets/madrasa_logo.dart';
 import '../director/widgets.dart';
@@ -40,14 +40,7 @@ class SchoolRoleSelectScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(s.chooseAccess),
-        actions: [
-          const LanguageMenu(),
-          IconButton(
-            tooltip: s.signOut,
-            icon: const Icon(Icons.logout),
-            onPressed: () => Supabase.instance.client.auth.signOut(),
-          ),
-        ],
+        actions: const [LanguageMenu(), AccountMenu()],
       ),
       body: Center(
         child: ConstrainedBox(

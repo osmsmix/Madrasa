@@ -28,7 +28,7 @@ Backend: **Supabase** (Postgres, Auth, RLS, Realtime). Push: **Firebase Cloud Me
   `signInWithPassword({ phone, password })`. User never sees a password; session persists.
 - On first sign-in the `handle_new_user` trigger creates the profile and backfills
   teacher/director memberships by phone. Parents are matched to students by phone (RLS).
-- Default channel **sms** (configurable to `whatsapp` via `CHINQIT_CHANNEL`).
+- Default channel **whatsapp** (configurable to `sms` via `CHINQIT_CHANNEL`).
 - **RLS is the security backbone** — it prevents any parent seeing another child. Schema + RLS built first.
 - Phone format everywhere: **E.164 without `+`** (e.g. `213661234567`).
 

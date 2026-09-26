@@ -4,9 +4,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../l10n/strings.dart';
 import '../director/director_app.dart';
+import '../parent/parent_app.dart';
+import '../routing/role_controller.dart';
 import '../routing/role_resolver.dart';
 import '../routing/role_select_screen.dart';
-import '../shells/placeholder_shells.dart';
 import '../teacher/teacher_app.dart';
 import 'auth_screen.dart';
 
@@ -67,7 +68,13 @@ class _RoleRouterState extends State<_RoleRouter> {
         // Everyone goes through the chooser each sign-in (even with a single
         // context), and can create their own school from there.
         final contexts = snapshot.data ?? const [];
-        if (_selected != null) return _shellFor(_selected!);
+        if (_selected != null) {
+          // Expose a "back to chooser" action to the active role app.
+          return Provider<RoleController>.value(
+            value: RoleController(() => setState(() => _selected = null)),
+            child: _shellFor(_selected!),
+          );
+        }
         return SchoolRoleSelectScreen(
           contexts: contexts,
           onSelected: (c) => setState(() => _selected = c),
@@ -80,7 +87,7 @@ class _RoleRouterState extends State<_RoleRouter> {
   Widget _shellFor(MembershipContext ctx) => switch (ctx.role) {
         AppRole.director => DirectorApp(initialSchoolId: ctx.schoolId),
         AppRole.teacher => TeacherApp(schoolId: ctx.schoolId),
-        AppRole.parent => const ParentHome(),
+        AppRole.parent => ParentApp(schoolId: ctx.schoolId),
       };
 }
 

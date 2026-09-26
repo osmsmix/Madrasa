@@ -270,9 +270,10 @@ class _AssignDialogState extends State<_AssignDialog> {
   Widget build(BuildContext context) {
     final s = context.s;
     return AlertDialog(
+      scrollable: true,
       title: Text(_isEdit ? widget.editing!.subjectName : s.assignSubject),
       content: SizedBox(
-        width: 380,
+        width: double.maxFinite,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,8 @@ import 'config/env.dart';
 import 'config/locale_controller.dart';
 import 'config/theme.dart';
 import 'data/academic_repository.dart';
+import 'data/bulletin_repository.dart';
+import 'data/parent_repository.dart';
 import 'data/school_repository.dart';
 import 'data/teacher_repository.dart';
 import 'features/auth/auth_gate.dart';
@@ -63,6 +66,8 @@ class MadrasaApp extends StatelessWidget {
         Provider(create: (_) => SchoolRepository(client)),
         Provider(create: (_) => AcademicRepository(client)),
         Provider(create: (_) => TeacherRepository(client)),
+        Provider(create: (_) => ParentRepository(client)),
+        Provider(create: (_) => BulletinRepository(client)),
       ],
       child: Consumer<LocaleController>(
         builder: (context, locale, _) => MaterialApp(

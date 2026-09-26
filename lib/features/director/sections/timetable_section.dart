@@ -242,7 +242,6 @@ class _TimetableSectionState extends State<TimetableSection> {
             ),
           ],
         ),
-        const Spacer(),
         FilledButton.tonalIcon(
           onPressed: _add,
           icon: const Icon(Icons.add),
@@ -413,9 +412,10 @@ class _SessionDialogState extends State<_SessionDialog> {
   Widget build(BuildContext context) {
     final s = context.s;
     return AlertDialog(
+      scrollable: true,
       title: Text(widget.editing == null ? s.addSession : s.edit),
       content: SizedBox(
-        width: 400,
+        width: double.maxFinite,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

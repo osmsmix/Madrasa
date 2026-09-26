@@ -27,12 +27,15 @@ class RoleResolver {
     if (user == null) return const [];
 
     final contexts = <MembershipContext>[];
+    final phone = user.phone ?? '';
 
-    // director / teacher — via memberships (with the school name)
+    // director / teacher — matched by PHONE (the stable identity). Matching by
+    // user_id would miss memberships a director created by phone AFTER this user
+    // already had an account (the trigger only backfills user_id at user creation).
     final memberships = await _client
         .from('memberships')
         .select('role, school_id, schools(name)')
-        .eq('user_id', user.id)
+        .eq('phone', phone)
         .inFilter('role', ['director', 'teacher']);
     for (final m in memberships as List) {
       final school = m['schools'] as Map<String, dynamic>?;
@@ -47,8 +50,7 @@ class RoleResolver {
     }
 
     // parent — the distinct schools where a student lists this phone as a parent
-    final phone = user.phone;
-    if (phone != null && phone.isNotEmpty) {
+    if (phone.isNotEmpty) {
       final kids = await _client
           .from('students')
           .select('school_id, schools(name)')

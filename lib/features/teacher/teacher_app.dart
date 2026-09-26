@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../l10n/strings.dart';
+import '../../widgets/account_menu.dart';
 import '../../widgets/language_menu.dart';
 import '../../widgets/madrasa_logo.dart';
 import '../../widgets/responsive.dart';
@@ -39,11 +39,7 @@ class _TeacherAppState extends State<TeacherApp> {
       title: Text(_title(context)),
       actions: [
         const LanguageMenu(),
-        IconButton(
-          tooltip: context.s.signOut,
-          icon: const Icon(Icons.logout),
-          onPressed: () => Supabase.instance.client.auth.signOut(),
-        ),
+        const AccountMenu(),
       ],
     );
   }

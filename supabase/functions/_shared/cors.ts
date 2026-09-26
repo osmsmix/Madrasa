@@ -11,4 +11,9 @@ export const CHINQIT_BASE = 'https://sms.chinqit.com/api/v2'
 
 // Default delivery channel. ChinqIT supports 'sms' and 'whatsapp'; override per
 // request or via the CHINQIT_CHANNEL env var.
-export const DEFAULT_CHANNEL = Deno.env.get('CHINQIT_CHANNEL') ?? 'sms'
+export const DEFAULT_CHANNEL = Deno.env.get('CHINQIT_CHANNEL') ?? 'whatsapp'
+
+// ChinqIT validates the phone number as E.164 (with a leading '+'). We store
+// phones everywhere else without the '+' (to match Supabase Auth / RLS), so add
+// it only for the ChinqIT API calls.
+export const toE164 = (phone: string) => '+' + phone.replace(/^\+/, '')

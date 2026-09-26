@@ -172,9 +172,10 @@ class _DeleteSchoolDialogState extends State<_DeleteSchoolDialog> {
     final s = context.s;
     final error = Theme.of(context).colorScheme.error;
     return AlertDialog(
+      scrollable: true,
       title: Text(s.deleteSchool),
       content: SizedBox(
-        width: 400,
+        width: double.maxFinite,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -491,6 +492,7 @@ class _YearTile extends StatelessWidget {
     return showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
+        scrollable: true,
         title: Text('${s.delete}: ${year.label}'),
         actions: [
           TextButton(
@@ -567,11 +569,12 @@ class _AddYearDialogState extends State<_AddYearDialog> {
   Widget build(BuildContext context) {
     final s = context.s;
     return AlertDialog(
+      scrollable: true,
       title: Text(s.addYear),
       content: Form(
         key: _formKey,
         child: SizedBox(
-          width: 380,
+          width: double.maxFinite,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [

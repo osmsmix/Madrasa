@@ -5,6 +5,7 @@ import '../../../data/academic_repository.dart';
 import '../../../data/models.dart';
 import '../../../data/school_repository.dart';
 import '../../../l10n/strings.dart';
+import '../../bulletin/bulletin_screen.dart';
 import '../widgets.dart';
 import 'subjects_section.dart' show CatalogList;
 
@@ -139,6 +140,9 @@ class _StudentsSectionState extends State<StudentsSection> {
           st.parentPhones.isEmpty ? null : st.parentPhones.map((p) => '+$p').join('  ·  '),
       onEdit: _edit,
       onDelete: _delete,
+      onTap: (st) => Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => BulletinScreen(student: st, school: widget.school),
+      )),
       leadingIcon: Icons.school_outlined,
       header: _selectors(context),
     );

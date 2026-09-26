@@ -53,13 +53,13 @@ functions/
 supabase functions deploy send-otp
 supabase functions deploy verify-otp
 supabase secrets set CHINQIT_API_KEY=<your-key>
-# optional: default channel is 'sms'; set to 'whatsapp' if SMS isn't provisioned
-supabase secrets set CHINQIT_CHANNEL=sms
+# optional: default channel is 'whatsapp'; set to 'sms' to switch
+# supabase secrets set CHINQIT_CHANNEL=sms
 ```
 `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are injected into functions automatically.
 
-> Channel note: `rim_terrains` used `whatsapp`. Here the default is `sms` (per your
-> choice). If your ChinqIT account isn't provisioned for SMS, switch the channel.
+> Channel note: the default is **`whatsapp`**. Override globally with the
+> `CHINQIT_CHANNEL` secret, or per request from the client.
 
 ## The one convention that will bite you: phone format
 All phones must be stored in the **same shape Supabase Auth uses** for

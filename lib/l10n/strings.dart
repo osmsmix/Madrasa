@@ -31,6 +31,10 @@ class AppStrings {
   String get pendingActivationTitle => _t('pendingActivationTitle');
   String get pendingActivationBody => _t('pendingActivationBody');
   String get signOut => _t('signOut');
+  String get account => _t('account');
+  String get switchAccess => _t('switchAccess');
+  String get deleteAccount => _t('deleteAccount');
+  String get deleteAccountWarning => _t('deleteAccountWarning');
   String get continueLabel => _t('continue');
 
   // Auth — phone
@@ -187,6 +191,33 @@ class AppStrings {
         AssessmentType.test => _t('typeTest'),
       };
 
+  // Bulletin (report card)
+  String get bulletin => _t('bulletin');
+  String get subjectCol => _t('subjectCol');
+  String get overallAverage => _t('overallAverage');
+  String get downloadPdf => _t('downloadPdf');
+  String get studentLabel => _t('studentLabel');
+  String get classLabel => _t('classLabel');
+  String get noGradesTerm => _t('noGradesTerm');
+  String get wholeYear => _t('wholeYear');
+  String get rankLabel => _t('rankLabel');
+
+  // Parent app
+  String get attendanceTab => _t('attendanceTab');
+  String get noChildren => _t('noChildren');
+  String get noGrades => _t('noGrades');
+  String get noAttendanceRecords => _t('noAttendanceRecords');
+  String get averageLabel => _t('averageLabel');
+  String get excusedLabel => _t('excusedLabel');
+  String get markExcused => _t('markExcused');
+  String get excuseReasonLabel => _t('excuseReasonLabel');
+
+  String attendanceStatusName(AttendanceStatus s) => switch (s) {
+        AttendanceStatus.present => _t('present'),
+        AttendanceStatus.absent => _t('absent'),
+        AttendanceStatus.late => _t('late'),
+      };
+
   // Timetable
   String get selectClass => _t('selectClass');
   String get addSession => _t('addSession');
@@ -240,6 +271,18 @@ class AppStrings {
       'en': 'Your school is created but not activated yet. Please contact us to activate it.',
     },
     'signOut': {'ar': 'تسجيل الخروج', 'fr': 'Se déconnecter', 'en': 'Sign out'},
+    'account': {'ar': 'الحساب', 'fr': 'Compte', 'en': 'Account'},
+    'switchAccess': {
+      'ar': 'تبديل المدرسة / الدور',
+      'fr': "Changer d'école / rôle",
+      'en': 'Switch school / role',
+    },
+    'deleteAccount': {'ar': 'حذف الحساب', 'fr': 'Supprimer le compte', 'en': 'Delete account'},
+    'deleteAccountWarning': {
+      'ar': 'سيؤدي هذا إلى حذف حسابك نهائياً. لا يمكن التراجع عن هذا الإجراء.',
+      'fr': 'Ceci supprimera définitivement votre compte. Cette action est irréversible.',
+      'en': 'This permanently deletes your account. This action cannot be undone.',
+    },
     'continue': {'ar': 'متابعة', 'fr': 'Continuer', 'en': 'Continue'},
 
     'signInTitle': {'ar': 'تسجيل الدخول', 'fr': 'Connexion', 'en': 'Sign in'},
@@ -451,6 +494,33 @@ class AppStrings {
       'fr': 'Certaines notes dépassent le maximum.',
       'en': 'Some grades exceed the maximum.',
     },
+
+    'bulletin': {'ar': 'كشف النقاط', 'fr': 'Bulletin', 'en': 'Report card'},
+    'subjectCol': {'ar': 'المادة', 'fr': 'Matière', 'en': 'Subject'},
+    'overallAverage': {'ar': 'المعدل العام', 'fr': 'Moyenne générale', 'en': 'Overall average'},
+    'downloadPdf': {'ar': 'تحميل / طباعة', 'fr': 'Télécharger / Imprimer', 'en': 'Download / Print'},
+    'studentLabel': {'ar': 'التلميذ', 'fr': 'Élève', 'en': 'Student'},
+    'classLabel': {'ar': 'القسم', 'fr': 'Classe', 'en': 'Class'},
+    'noGradesTerm': {
+      'ar': 'لا توجد علامات لهذا الفصل.',
+      'fr': 'Aucune note pour cette période.',
+      'en': 'No grades for this term.',
+    },
+    'wholeYear': {'ar': 'السنة كاملة', 'fr': "Toute l'année", 'en': 'Whole year'},
+    'rankLabel': {'ar': 'الترتيب', 'fr': 'Rang', 'en': 'Rank'},
+
+    'attendanceTab': {'ar': 'الحضور', 'fr': 'Présences', 'en': 'Attendance'},
+    'noChildren': {
+      'ar': 'لا يوجد أبناء مرتبطون برقمك في هذه المدرسة.',
+      'fr': 'Aucun enfant associé à votre numéro dans cette école.',
+      'en': 'No children linked to your number in this school.',
+    },
+    'noGrades': {'ar': 'لا توجد علامات بعد.', 'fr': 'Aucune note pour le moment.', 'en': 'No grades yet.'},
+    'noAttendanceRecords': {'ar': 'لا توجد سجلات حضور بعد.', 'fr': 'Aucun enregistrement de présence.', 'en': 'No attendance records yet.'},
+    'averageLabel': {'ar': 'المعدل', 'fr': 'Moyenne', 'en': 'Average'},
+    'excusedLabel': {'ar': 'بعذر', 'fr': 'Justifié', 'en': 'Excused'},
+    'markExcused': {'ar': 'تبرير الغياب', 'fr': "Justifier l'absence", 'en': 'Mark excused'},
+    'excuseReasonLabel': {'ar': 'السبب (اختياري)', 'fr': 'Motif (facultatif)', 'en': 'Reason (optional)'},
 
     'selectClass': {'ar': 'اختر القسم', 'fr': 'Choisir la classe', 'en': 'Select class'},
     'addSession': {'ar': 'إضافة حصة', 'fr': 'Ajouter un cours', 'en': 'Add session'},
